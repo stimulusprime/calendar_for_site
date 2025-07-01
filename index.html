@@ -38,7 +38,7 @@
 </head>
 <body>
 
-  <h2>Календар shobsho studio (09:00–20:30)</h2>
+  <h2>Календар shobsho studio</h2>
   <div id="calendar"></div>
 
   <script>
@@ -68,8 +68,7 @@
         locale: 'uk',
 
         eventContent: function(arg) {
-          const timeText = arg.timeText;
-          return { html: `<b>${timeText}</b><br>Зайнято` };
+          return { html: `<b>Зйомка</b>` };
         },
         slotLabelFormat: {
           hour: '2-digit',
@@ -86,6 +85,13 @@
           month: '2-digit',
           year: 'numeric',
           separator: ' – '
+        },
+        buttonText: {
+          today: 'Сьогодні',
+          month: 'Місяць',
+          week: 'Тиждень',
+          day: 'День',
+          list: 'Список'
         },
       });
 

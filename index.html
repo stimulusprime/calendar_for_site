@@ -2,7 +2,7 @@
 <html lang="uk">
 <head>
   <meta charset="utf-8" />
-  <title>Календар Shobsho</title>
+  <title>Календар shobsho studio</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <!-- FullCalendar CSS -->
@@ -11,6 +11,7 @@
   <!-- FullCalendar JS -->
   <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@fullcalendar/google-calendar@6.1.8/index.global.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/locales/uk.global.min.js"></script>
 
   <style>
     body {
@@ -37,7 +38,7 @@
 </head>
 <body>
 
-  <h2>Календар Shobsho (09:00–20:30)</h2>
+  <h2>Календар shobsho studio (09:00–20:30)</h2>
   <div id="calendar"></div>
 
   <script>
@@ -64,17 +65,28 @@
           googleCalendarId: 'studio@shobsho.com.ua'
         },
 
-        eventTimeFormat: {
+        locale: 'uk',
+
+        eventContent: function(arg) {
+          const timeText = arg.timeText;
+          return { html: `<b>${timeText}</b><br>Зайнято` };
+        },
+        slotLabelFormat: {
           hour: '2-digit',
           minute: '2-digit',
           hour12: false
         },
-
-        eventContent: function(arg) {
-          const timeText = arg.timeText;
-          const title = arg.event.title && arg.event.title.trim() !== '' ? arg.event.title : 'Зайнято';
-          return { html: `<b>${timeText}</b><br>${title}` };
-        }
+        dayHeaderFormat: {
+          day: '2-digit',
+          month: '2-digit',
+          weekday: 'short'
+        },
+        titleFormat: {
+          day: '2-digit',
+          month: '2-digit',
+          year: 'numeric',
+          separator: ' – '
+        },
       });
 
       calendar.render();

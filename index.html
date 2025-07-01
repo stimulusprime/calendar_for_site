@@ -64,21 +64,16 @@
           googleCalendarId: 'studio@shobsho.com.ua'
         },
 
-        // 24-годинний формат
         eventTimeFormat: {
           hour: '2-digit',
           minute: '2-digit',
           hour12: false
         },
 
-        // Якщо подія без назви — ставимо "Зайнято"
-        eventDidMount: function(info) {
-          const titleEl = info.el.querySelector('.fc-event-title');
-          if (!info.event.title || info.event.title.trim() === "") {
-            if (titleEl) {
-              titleEl.textContent = "Зайнято";
-            }
-          }
+        eventContent: function(arg) {
+          const timeText = arg.timeText;
+          const title = arg.event.title && arg.event.title.trim() !== '' ? arg.event.title : 'Зайнято';
+          return { html: `<b>${timeText}</b><br>${title}` };
         }
       });
 

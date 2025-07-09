@@ -5,9 +5,13 @@
   <title>Календар shobsho studio</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <!-- DayPilot Scheduler Lite CSS & JS -->
-  <link type="text/css" rel="stylesheet" href="https://cdn.daypilot.org/daypilot-lite@2024.2.5701/styles/daypilot-lite.min.css">
-  <script src="https://cdn.daypilot.org/daypilot-lite@2024.2.5701/daypilot-lite.min.js"></script>
+  <!-- FullCalendar CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.css" rel="stylesheet">
+
+  <!-- FullCalendar JS -->
+  <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fullcalendar/google-calendar@6.1.8/index.global.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/locales/uk.global.min.js"></script>
 
   <style>
     body {
@@ -16,119 +20,151 @@
       padding: 20px;
       background-color: #f5f5f5;
     }
-    h2 {
-      text-align: center;
-      margin-bottom: 20px;
+
+    h2, .fc-toolbar-title, .fc-col-header-cell {
+      font-weight: 400 !important; /* normal */
+      text-align: center !important;
     }
-    #scheduler {
-      max-width: 1200px;
+
+    #calendar {
+      max-width: 1000px;
       margin: 0 auto;
       background-color: #fff;
       padding: 10px;
       border-radius: 10px;
       box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
     }
-    .shooting {
-      background-color: #1c3e30 !important;
+
+    /* Кастомний колір для зайнятих блоків */
+    .fc-event, .fc-event-main, .fc-event-title {
+      border: none !important;
       color: #fff !important;
-      font-weight: 300 !important;
-      font-size: 13px !important;
-      border-radius: 4px;
-      padding: 2px 4px;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
+      font-weight: 300 !important; /* thin */
+      font-style: normal !important;
+      font-family: inherit !important;
+      padding: 1px 2px !important;
+      text-align: left !important;
+      line-height: 1.1 !important;
+      font-size: 11px !important;
+      margin-right: 2px !important;
+      margin-bottom: 2px !important;
+      box-sizing: border-box !important;
+      overflow: hidden !important;
+      text-overflow: ellipsis !important;
+      white-space: nowrap !important;
     }
-    .cleaning {
+    .fc-event-title { display: block !important; }
+    .fc-event.fc-cleaning, .fc-event-main.fc-cleaning, .fc-event-title.fc-cleaning, .fc-bg-event.fc-cleaning {
       background-color: #f19a37 !important;
       color: #fff !important;
-      font-weight: 300 !important;
-      font-size: 13px !important;
-      border-radius: 4px;
-      padding: 2px 4px;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
+    }
+    .fc-event.fc-shooting, .fc-event-main.fc-shooting, .fc-event-title.fc-shooting {
+      background-color: #1c3e30 !important;
+      color: #fff !important;
     }
   </style>
 </head>
 <body>
+
   <h2>Календар shobsho studio</h2>
-  <div id="scheduler"></div>
+  <div id="calendar"></div>
 
   <script>
-    // Дати тижня (понеділок-неділя)
-    function getWeekDays(start) {
-      const days = [];
-      for (let i = 0; i < 7; i++) {
-        const d = new Date(start);
-        d.setDate(d.getDate() + i);
-        days.push(d);
-      }
-      return days;
-    }
-    // Знайти понеділок цього тижня
-    function getMonday(d) {
-      d = new Date(d);
-      const day = d.getDay(), diff = d.getDate() - day + (day === 0 ? -6 : 1);
-      return new Date(d.setDate(diff));
-    }
-    const monday = getMonday(new Date());
-    const weekDays = getWeekDays(monday);
+    document.addEventListener('DOMContentLoaded', function () {
+      const calendarEl = document.getElementById('calendar');
 
-    // Дані подій (демо)
-    const events = [
-      { id: 1, text: '📸 Зйомка', start: weekDays[0].toISOString().slice(0,10)+"T09:00:00", end: weekDays[0].toISOString().slice(0,10)+"T13:00:00", resource: "studio", class: "shooting" },
-      { id: 2, text: '🧹 Прибирання', start: weekDays[0].toISOString().slice(0,10)+"T14:00:00", end: weekDays[0].toISOString().slice(0,10)+"T14:15:00", resource: "studio", class: "cleaning" },
-      { id: 3, text: '📸 Зйомка', start: weekDays[0].toISOString().slice(0,10)+"T15:00:00", end: weekDays[0].toISOString().slice(0,10)+"T17:00:00", resource: "studio", class: "shooting" },
-      { id: 4, text: '🧹 Прибирання', start: weekDays[0].toISOString().slice(0,10)+"T17:00:00", end: weekDays[0].toISOString().slice(0,10)+"T17:15:00", resource: "studio", class: "cleaning" },
-      { id: 5, text: '📸 Зйомка', start: weekDays[1].toISOString().slice(0,10)+"T12:00:00", end: weekDays[1].toISOString().slice(0,10)+"T14:00:00", resource: "studio", class: "shooting" },
-      { id: 6, text: '🧹 Прибирання', start: weekDays[1].toISOString().slice(0,10)+"T14:00:00", end: weekDays[1].toISOString().slice(0,10)+"T14:15:00", resource: "studio", class: "cleaning" },
-      { id: 7, text: '📸 Зйомка', start: weekDays[2].toISOString().slice(0,10)+"T12:00:00", end: weekDays[2].toISOString().slice(0,10)+"T15:00:00", resource: "studio", class: "shooting" },
-      { id: 8, text: '🧹 Прибирання', start: weekDays[2].toISOString().slice(0,10)+"T15:00:00", end: weekDays[2].toISOString().slice(0,10)+"T15:15:00", resource: "studio", class: "cleaning" },
-      { id: 9, text: '📸 Зйомка', start: weekDays[3].toISOString().slice(0,10)+"T09:00:00", end: weekDays[3].toISOString().slice(0,10)+"T12:00:00", resource: "studio", class: "shooting" },
-      { id: 10, text: '🧹 Прибирання', start: weekDays[3].toISOString().slice(0,10)+"T12:00:00", end: weekDays[3].toISOString().slice(0,10)+"T12:15:00", resource: "studio", class: "cleaning" },
-      { id: 11, text: '📸 Зйомка', start: weekDays[4].toISOString().slice(0,10)+"T15:00:00", end: weekDays[4].toISOString().slice(0,10)+"T18:00:00", resource: "studio", class: "shooting" },
-      { id: 12, text: '🧹 Прибирання', start: weekDays[4].toISOString().slice(0,10)+"T18:00:00", end: weekDays[4].toISOString().slice(0,10)+"T18:15:00", resource: "studio", class: "cleaning" },
-      { id: 13, text: '📸 Зйомка', start: weekDays[5].toISOString().slice(0,10)+"T09:00:00", end: weekDays[5].toISOString().slice(0,10)+"T12:00:00", resource: "studio", class: "shooting" },
-      { id: 14, text: '🧹 Прибирання', start: weekDays[5].toISOString().slice(0,10)+"T12:00:00", end: weekDays[5].toISOString().slice(0,10)+"T12:15:00", resource: "studio", class: "cleaning" },
-      { id: 15, text: '📸 Зйомка', start: weekDays[6].toISOString().slice(0,10)+"T15:00:00", end: weekDays[6].toISOString().slice(0,10)+"T18:00:00", resource: "studio", class: "shooting" },
-      { id: 16, text: '🧹 Прибирання', start: weekDays[6].toISOString().slice(0,10)+"T18:00:00", end: weekDays[6].toISOString().slice(0,10)+"T18:15:00", resource: "studio", class: "cleaning" }
-    ];
+      const calendar = new FullCalendar.Calendar(calendarEl, {
+        initialView: 'timeGridWeek',
+        height: 'auto',
+        timeZone: 'Europe/Kiev',
+        nowIndicator: true,
+        allDaySlot: false,
+        slotMinTime: "09:00:00",
+        slotMaxTime: "20:30:00",
+        firstDay: 1,
 
-    const scheduler = new DayPilot.Scheduler("scheduler", {
-      locale: "uk-ua",
-      timeHeaders: [
-        { groupBy: "Day", format: "dddd, dd.MM" },
-        { groupBy: "Hour", format: "HH:mm" }
-      ],
-      scale: "CellDuration",
-      cellDuration: 15,
-      startDate: weekDays[0],
-      days: 7,
-      businessBeginsHour: 9,
-      businessEndsHour: 20.5,
-      resources: [ { name: "Студія", id: "studio" } ],
-      events: events,
-      eventHeight: 28,
-      rowHeaderWidth: 80,
-      cellWidth: 60,
-      eventRender: function(args) {
-        args.data.cssClass = args.data.class;
-      },
-      onBeforeEventRender: function(args) {
-        args.data.backColor = undefined;
-      },
-      showNonBusiness: false,
-      showCurrentTime: true,
-      headerDateFormat: "dddd, dd.MM",
-      treeEnabled: false,
-      durationBarVisible: false,
-      eventStackingLineHeight: 0,
-      eventMovingStartEndEnabled: false,
-      eventResizingStartEndEnabled: false
+        headerToolbar: {
+          left: 'prev,next today',
+          center: 'title',
+          right: ''
+        },
+
+        googleCalendarApiKey: 'AIzaSyDUec_xuBexXrWj1rFcNJo_d9lWZSM8Xp8',
+        events: {
+          googleCalendarId: 'studio@shobsho.com.ua'
+        },
+
+        locale: 'uk',
+
+        eventContent: function(arg) {
+          const duration = arg.event.end - arg.event.start;
+          const durationMinutes = duration / (1000 * 60);
+          if (durationMinutes <= 15) {
+            return { html: `🧹 Прибирання` };
+          } else {
+            return { html: `📸 Зйомка` };
+          }
+        },
+        eventDidMount: function(info) {
+          const duration = info.event.end - info.event.start;
+          const durationMinutes = duration / (1000 * 60);
+          if (durationMinutes <= 15) {
+            info.el.style.backgroundColor = '#f19a37';
+            info.el.style.color = '#fff';
+          } else {
+            info.el.style.backgroundColor = '#1c3e30';
+            info.el.style.color = '#fff';
+          }
+
+          // Кастом: якщо є подія, яка закінчується рівно в момент початку цієї, розширити цю подію на 100%
+          const allEvents = info.view.getCurrentData().eventStore.defs;
+          const allInstances = info.view.getCurrentData().eventStore.instances;
+          const thisStart = info.event.start.getTime();
+          const thisEnd = info.event.end.getTime();
+          let hasAdjacent = false;
+          for (const key in allInstances) {
+            const inst = allInstances[key];
+            if (inst.range.end.getTime() === thisStart && inst.defId !== info.event._def.defId) {
+              hasAdjacent = true;
+              break;
+            }
+          }
+          if (hasAdjacent) {
+            info.el.style.width = '100%';
+            info.el.style.left = '0';
+          }
+        },
+        slotLabelFormat: {
+          hour: '2-digit',
+          minute: '2-digit',
+          hour12: false
+        },
+        dayHeaderFormat: {
+          day: '2-digit',
+          month: '2-digit',
+          weekday: 'short'
+        },
+        titleFormat: {
+          month: 'long',
+          year: 'numeric'
+        },
+        buttonText: {
+          today: 'Сьогодні',
+          month: 'Місяць',
+          week: 'Тиждень',
+          day: 'День',
+          list: 'Список'
+        },
+        eventOverlap: function(stillEvent, movingEvent) {
+          // Якщо події не перекриваються навіть на мілісекунду, дозволяємо займати один стовпчик
+          return stillEvent.end > movingEvent.start && stillEvent.start < movingEvent.end;
+        },
+        slotEventOverlap: false,
+        // slotMinTime/slotMaxTime та eventOrder можна налаштувати для додаткового контролю розміщення подій
+      });
+
+      calendar.render();
     });
-    scheduler.init();
   </script>
 </body>
 </html>

@@ -115,6 +115,24 @@
             info.el.style.backgroundColor = '#1c3e30';
             info.el.style.color = '#fff';
           }
+
+          // Кастом: якщо є подія, яка закінчується рівно в момент початку цієї, розширити цю подію на 100%
+          const allEvents = info.view.getCurrentData().eventStore.defs;
+          const allInstances = info.view.getCurrentData().eventStore.instances;
+          const thisStart = info.event.start.getTime();
+          const thisEnd = info.event.end.getTime();
+          let hasAdjacent = false;
+          for (const key in allInstances) {
+            const inst = allInstances[key];
+            if (inst.range.end.getTime() === thisStart && inst.defId !== info.event._def.defId) {
+              hasAdjacent = true;
+              break;
+            }
+          }
+          if (hasAdjacent) {
+            info.el.style.width = '100%';
+            info.el.style.left = '0';
+          }
         },
         slotLabelFormat: {
           hour: '2-digit',

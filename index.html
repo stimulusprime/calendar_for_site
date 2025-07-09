@@ -37,7 +37,6 @@
 
     /* Кастомний колір для зайнятих блоків */
     .fc-event, .fc-event-main, .fc-event-title {
-      background-color: #1c3e30 !important;
       border: none !important;
       color: #fff !important;
       font-weight: 300 !important; /* thin */
@@ -47,6 +46,14 @@
       text-align: left !important;
       line-height: 1.2 !important;
       font-size: 12px !important;
+    }
+    .fc-event.fc-cleaning, .fc-event-main.fc-cleaning, .fc-event-title.fc-cleaning {
+      background-color: #f19a37 !important;
+      color: #fff !important;
+    }
+    .fc-event.fc-shooting, .fc-event-main.fc-shooting, .fc-event-title.fc-shooting {
+      background-color: #1c3e30 !important;
+      color: #fff !important;
     }
   </style>
 </head>
@@ -85,11 +92,10 @@
         eventContent: function(arg) {
           const duration = arg.event.end - arg.event.start;
           const durationMinutes = duration / (1000 * 60);
-          
           if (durationMinutes <= 15) {
-            return { html: `🧹 Прибирання` };
+            return { html: `🧹 Прибирання`, classNames: ['fc-cleaning'] };
           } else {
-            return { html: `📸 Зйомка` };
+            return { html: `📸 Зйомка`, classNames: ['fc-shooting'] };
           }
         },
         slotLabelFormat: {

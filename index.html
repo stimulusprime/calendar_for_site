@@ -48,12 +48,12 @@
       font-size: 11px !important;
       margin-right: 2px !important;
       margin-bottom: 2px !important;
-      background-color: #1c3e30 !important;
       box-sizing: border-box !important;
       overflow: hidden !important;
       text-overflow: ellipsis !important;
       white-space: nowrap !important;
     }
+    .fc-event-title { display: block !important; }
     .fc-event.fc-cleaning, .fc-event-main.fc-cleaning, .fc-event-title.fc-cleaning, .fc-bg-event.fc-cleaning {
       background-color: #f19a37 !important;
       color: #fff !important;
@@ -100,9 +100,9 @@
           const duration = arg.event.end - arg.event.start;
           const durationMinutes = duration / (1000 * 60);
           if (durationMinutes <= 15) {
-            return { html: `🧹 Прибирання`, classNames: ['fc-cleaning'] };
+            return { html: `🧹 Прибирання`, style: 'background-color: #f19a37; color: #fff;' };
           } else {
-            return { html: `📸 Зйомка`, classNames: ['fc-shooting'] };
+            return { html: `📸 Зйомка`, style: 'background-color: #1c3e30; color: #fff;' };
           }
         },
         slotLabelFormat: {
@@ -127,6 +127,7 @@
           list: 'Список'
         },
         eventOverlap: false,
+        slotEventOverlap: false,
       });
 
       calendar.render();

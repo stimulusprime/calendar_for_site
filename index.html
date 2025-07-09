@@ -100,9 +100,20 @@
           const duration = arg.event.end - arg.event.start;
           const durationMinutes = duration / (1000 * 60);
           if (durationMinutes <= 15) {
-            return { html: `🧹 Прибирання`, style: 'background-color: #f19a37; color: #fff;' };
+            return { html: `🧹 Прибирання` };
           } else {
-            return { html: `📸 Зйомка`, style: 'background-color: #1c3e30; color: #fff;' };
+            return { html: `📸 Зйомка` };
+          }
+        },
+        eventDidMount: function(info) {
+          const duration = info.event.end - info.event.start;
+          const durationMinutes = duration / (1000 * 60);
+          if (durationMinutes <= 15) {
+            info.el.style.backgroundColor = '#f19a37';
+            info.el.style.color = '#fff';
+          } else {
+            info.el.style.backgroundColor = '#1c3e30';
+            info.el.style.color = '#fff';
           }
         },
         slotLabelFormat: {
@@ -128,6 +139,7 @@
         },
         eventOverlap: false,
         slotEventOverlap: false,
+        // slotMinTime/slotMaxTime та eventOrder можна налаштувати для додаткового контролю розміщення подій
       });
 
       calendar.render();

@@ -79,7 +79,14 @@
         locale: 'uk',
 
         eventContent: function(arg) {
-          return { html: `<b>Зйомка</b>` };
+          const duration = arg.event.end - arg.event.start;
+          const durationMinutes = duration / (1000 * 60);
+          
+          if (durationMinutes <= 15) {
+            return { html: `<b>Прибирання</b>` };
+          } else {
+            return { html: `<b>Зйомка</b>` };
+          }
         },
         slotLabelFormat: {
           hour: '2-digit',

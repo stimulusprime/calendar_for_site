@@ -137,7 +137,10 @@
           day: 'День',
           list: 'Список'
         },
-        eventOverlap: false,
+        eventOverlap: function(stillEvent, movingEvent) {
+          // Якщо події не перекриваються навіть на мілісекунду, дозволяємо займати один стовпчик
+          return stillEvent.end > movingEvent.start && stillEvent.start < movingEvent.end;
+        },
         slotEventOverlap: false,
         // slotMinTime/slotMaxTime та eventOrder можна налаштувати для додаткового контролю розміщення подій
       });
